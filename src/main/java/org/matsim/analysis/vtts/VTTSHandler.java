@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.math.stat.StatUtils;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 import org.matsim.api.core.v01.Id;
 import org.matsim.api.core.v01.Scenario;
 import org.matsim.api.core.v01.TransportMode;
@@ -66,7 +66,7 @@ import org.matsim.core.utils.misc.Time;
  */
 public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventHandler, PersonDepartureEventHandler, TransitDriverStartsEventHandler {
 
-	private final static Logger log = Logger.getLogger(VTTSHandler.class);
+//	private final static Logger log = Logger.getLogger(VTTSHandler.class);
 	private static int incompletedPlanWarning = 0;
 	private static int noCarVTTSWarning = 0;
 	private static int noTripVTTSWarning = 0;
@@ -99,7 +99,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 	public VTTSHandler(Scenario scenario, String[] helpLegModes, String stageActivitySubString) {
 
 		if (scenario.getConfig().planCalcScore().getMarginalUtilityOfMoney() == 0.) {
-			log.warn("The marginal utility of money must not be 0.0. The VTTS is computed in Money per Time.");
+//			log.warn("The marginal utility of money must not be 0.0. The VTTS is computed in Money per Time.");
 		}
 		this.modesToBeSkipped = helpLegModes;
 		this.stageActivitySubString = stageActivitySubString;
@@ -115,7 +115,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 	public void reset(int iteration) {
 
 		this.currentIteration = iteration;
-		log.warn("Resetting VTTS information from previous iteration.");
+//		log.warn("Resetting VTTS information from previous iteration.");
 
 		incompletedPlanWarning = 0;
 		noCarVTTSWarning = 0;
@@ -266,12 +266,14 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 				// No, there is no information about the current activity which indicates that the trip (with the delay) was not completed.
 
 				if (incompletedPlanWarning <= 10) {
+/*
 					log.warn("Agent " + personId + " has not yet completed the plan/trip (the agent is probably stucking). Cannot compute the disutility of being late at this activity. "
 							+ "Something like the disutility of not arriving at the activity is required. Try to avoid this by setting a smaller stuck time period.");
 					log.warn("Setting the disutilty of being delayed on the previous trip using the config parameters; assuming the marginal disutility of being delayed at the (hypothetical) activity to be equal to beta_performing: " + this.scenario.getConfig().planCalcScore().getPerforming_utils_hr());
+*/
 
 					if (incompletedPlanWarning == 10) {
-						log.warn(Gbl.FUTURE_SUPPRESSED);
+//						log.warn(Gbl.FUTURE_SUPPRESSED);
 					}
 					incompletedPlanWarning++;
 				}
@@ -285,8 +287,10 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			if (this.scenario.getConfig().planCalcScore().getModes().get(mode) != null) {
 				marginalUtilityOfTraveling = this.scenario.getConfig().planCalcScore().getModes().get(mode).getMarginalUtilityOfTraveling();
 			} else {
+/*
 				log.warn("Could not identify the marginal utility of traveling for mode " + mode + ". "
 						+ "Setting this value to zero. (Probably using subpopulations...)");
+*/
 			}
 			double tripDelayDisutilityOneSec = (1.0 / 3600.) * marginalUtilityOfTraveling * (-1);
 
@@ -335,7 +339,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			}
 
 			bw.close();
-			log.info("Output written to " + fileName);
+//			log.info("Output written to " + fileName);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -365,7 +369,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			}
 
 			bw.close();
-			log.info("Output written to " + fileName);
+//			log.info("Output written to " + fileName);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -393,7 +397,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			}
 
 			bw.close();
-			log.info("Output written to " + fileName);
+//			log.info("Output written to " + fileName);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -424,7 +428,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 
 		} else {
 
-			log.warn("Couldn't find any VTTS of person " + id + ". Using the default VTTS...");
+//			log.warn("Couldn't find any VTTS of person " + id + ". Using the default VTTS...");
 			return this.defaultVTTS_moneyPerHour;
 		}
 	}
@@ -442,7 +446,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			}
 
 			if (counter == 0) {
-				log.warn("Couldn't find any VTTS of person " + id + " with transport mode + " + mode + ". Using the default VTTS...");
+//				log.warn("Couldn't find any VTTS of person " + id + " with transport mode + " + mode + ". Using the default VTTS...");
 				return this.defaultVTTS_moneyPerHour;
 
 			} else {
@@ -451,7 +455,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			}
 
 		} else {
-			log.warn("Couldn't find any VTTS of person " + id + ". Using the default VTTS...");
+//			log.warn("Couldn't find any VTTS of person " + id + ". Using the default VTTS...");
 			return this.defaultVTTS_moneyPerHour;
 		}
 	}
@@ -485,11 +489,13 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			if (tripNrOfGivenTime == Integer.MIN_VALUE) {
 
 				if (noTripNrWarning <= 3) {
+/*
 					log.warn("Could not identify the trip number of person " + id + " at time " + time + "."
 							+ " Trying to use the average car VTTS...");
+*/
 				}
 				if (noTripNrWarning == 3) {
-					log.warn("Additional warnings of this type are suppressed.");
+//					log.warn("Additional warnings of this type are suppressed.");
 				}
 				noTripNrWarning++;
 				return this.getAvgVTTSh(id, TransportMode.car);
@@ -506,10 +512,12 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 
 
 						if (noCarVTTSWarning <= 3) {
+/*
 							log.warn("In the previous iteration at the given time " + time + " the agent " + id + " was performing a trip with a different mode (" + this.personId2TripNr2Mode.get(id).get(tripNrOfGivenTime) + ")."
 									+ "Trying to use the average car VTTS.");
+*/
 							if (noCarVTTSWarning == 3) {
-								log.warn("Additional warnings of this type are suppressed.");
+//								log.warn("Additional warnings of this type are suppressed.");
 							}
 							noCarVTTSWarning++;
 						}
@@ -518,11 +526,13 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 
 				} else {
 					if (noTripVTTSWarning <= 3) {
+/*
 						log.warn("Could not find the VTTS of person " + id + " and trip number " + tripNrOfGivenTime + " (time: " + time + ")."
 								+ " Trying to use the average car VTTS...");
+*/
 					}
 					if (noTripVTTSWarning == 3) {
-						log.warn("Additional warnings of this type are suppressed.");
+//						log.warn("Additional warnings of this type are suppressed.");
 					}
 					noTripVTTSWarning++;
 					return this.getAvgVTTSh(id, TransportMode.car);
@@ -615,7 +625,7 @@ public class VTTSHandler implements ActivityStartEventHandler, ActivityEndEventH
 			bw.newLine();
 
 			bw.close();
-			log.info("Output written to " + fileName);
+//			log.info("Output written to " + fileName);
 
 		} catch (IOException e) {
 			e.printStackTrace();
