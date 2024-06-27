@@ -48,6 +48,7 @@ import org.matsim.core.config.groups.RoutingConfigGroup;
 import org.matsim.core.config.groups.VspExperimentalConfigGroup;
 import org.matsim.core.controler.AbstractModule;
 import org.matsim.core.controler.Controler;
+import org.matsim.core.controler.OutputDirectoryHierarchy;
 import org.matsim.core.router.AnalysisMainModeIdentifier;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.drtFare.KelheimDrtFareModule;
@@ -113,6 +114,12 @@ public class RunKelheimScenario extends MATSimApplication {
 	@CommandLine.Option(names = "--plans", defaultValue = "", description = "Use different input plans")
 	private String planOrigin;
 
+	@CommandLine.Option(names = "--base-fare", defaultValue = "2.0", description = "Base fare of KEXI trip")
+	private double baseFare;
+
+	@CommandLine.Option(names = "--surcharge", defaultValue = "1.0", description = "Surcharge of KEXI trip from / to train station")
+	private double surcharge;
+
 	public RunKelheimScenario(@Nullable Config config) {
 		super(config);
 	}
@@ -149,6 +156,7 @@ public class RunKelheimScenario extends MATSimApplication {
 		config.controller().setOutputDirectory(sample.adjustName(config.controller().getOutputDirectory()));
 		config.plans().setInputFile(sample.adjustName(config.plans().getInputFile()));
 		config.controller().setRunId(sample.adjustName(config.controller().getRunId()));
+		config.controller().setOverwriteFileSetting(OutputDirectoryHierarchy.OverwriteFileSetting.deleteDirectoryIfExists);
 
 		config.qsim().setFlowCapFactor(sample.getSize() / 100.0);
 		config.qsim().setStorageCapFactor(sample.getSize() / 100.0);
@@ -337,7 +345,7 @@ public class RunKelheimScenario extends MATSimApplication {
 					maxSpeed));
 
 			for (DrtConfigGroup drtCfg : multiModeDrtConfig.getModalElements()) {
-				controler.addOverridingModule(new KelheimDrtFareModule(drtCfg, network, avFare));
+				controler.addOverridingModule(new KelheimDrtFareModule(drtCfg, network, avFare, baseFare, surcharge));
 			}
 
 			//controler.addOverridingModule(new DrtEstimatorModule());
