@@ -23,7 +23,7 @@
     </module>
 
     <module name="network">
-        <param name="inputNetworkFile" value="D:\Programming\MATSIM\matsim-kelheim\local-input\kelheim_modified_highway.xml"/>
+        <param name="inputNetworkFile" value="https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/kelheim/kelheim-v3.0/input/kelheim-v3.0-network-with-pt.xml.gz"/>
         <param name="laneDefinitionsFile" value="null"/>
     </module>
 
